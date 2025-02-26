@@ -36,13 +36,13 @@
                 <StackPanel Margin="10,0,0,0">
                     <TextBlock Text="Monitor Nacional de Almacenamiento" FontSize="24" FontWeight="Bold" Foreground="White" />
                     <TextBlock Text="Total: 74 TB - Usado: 61 GB - Libre: 13 GB" FontSize="14" Foreground="White" />
-                    <TextBlock Text="Reportando 7 de 9" FontSize="12" Foreground="White" />
+                    <TextBlock x:Name="ServidoresArribatxt" Text="Reportando 0 de 9" FontSize="12" Foreground="White" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>
 
         <UniformGrid Columns="5" Rows="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10,100,10,10">
-            <Button Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
+            <Button x:Name="BtnCochabamba" Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
                 <Border CornerRadius="20" Margin="0">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
@@ -54,10 +54,60 @@
                         <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Cochabamba" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtCochabambaNombre" Text="Cochabamba" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="Red"/>
+                            <TextBlock x:Name="txtCochaTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White" Visibility="Collapsed"/>
+                            <TextBlock x:Name="txtCochaUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White" Visibility="Collapsed"/>
+                            <TextBlock x:Name="txtCochaLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White" Visibility="Collapsed"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <lvc:PieChart x:Name="pieChart1" Width="50" Height="50" Visibility="Collapsed"/>
+                                <lvc:PieChart x:Name="pieChart2" Width="50" Height="50" Visibility="Collapsed"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Button>
+
+            <Button x:Name="BtnBeni" Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                <Border CornerRadius="20" Margin="0">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
+                            <GradientStop Color="#3F6793" Offset="0.1"/>
+                            <GradientStop Color="#699CCC" Offset="0.8"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
+                        <StackPanel HorizontalAlignment="Center">
+                            <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="txtBeniNombre" Text="Beni" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtBeniTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtBeniUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtBeniLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <lvc:PieChart Width="50" Height="50"/>
+                                <lvc:PieChart Width="50" Height="50"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Button>
+
+            <Button x:Name="BtnSantaCruz" Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                <Border CornerRadius="20" Margin="0">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
+                            <GradientStop Color="#3F6793" Offset="0.1"/>
+                            <GradientStop Color="#699CCC" Offset="0.8"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
+                        <StackPanel HorizontalAlignment="Center">
+                            <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="txtSantaCruzNombre" Text="SantaCruz" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtSantaCruzTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtSantaCruzUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtSantaCruzLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <lvc:PieChart Width="50" Height="50"/>
                                 <lvc:PieChart Width="50" Height="50"/>
@@ -76,13 +126,113 @@
                         </LinearGradientBrush>
                     </Border.Background>
                     <Grid>
+                        <Border x:Name="BtnPando" Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
+                        <StackPanel HorizontalAlignment="Center">
+                            <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="txtPandoNombre" Text="Pando" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtPandoTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtPandoUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtPandoLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <lvc:PieChart Width="50" Height="50"/>
+                                <lvc:PieChart Width="50" Height="50"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Button>
+
+            <Button x:Name="BtnChuquisaca" Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                <Border CornerRadius="20" Margin="0">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
+                            <GradientStop Color="#3F6793" Offset="0.1"/>
+                            <GradientStop Color="#699CCC" Offset="0.8"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid>
                         <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Beni" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtChuquisacaNombre" Text="Chuquisaca" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtChuquisacaTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtChuquisacaUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtChuquisacaLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <lvc:PieChart Width="50" Height="50"/>
+                                <lvc:PieChart Width="50" Height="50"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Button>
+
+            <Button x:Name="BtnLaPaz" Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                <Border CornerRadius="20" Margin="0">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
+                            <GradientStop Color="#3F6793" Offset="0.1"/>
+                            <GradientStop Color="#699CCC" Offset="0.8"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
+                        <StackPanel HorizontalAlignment="Center">
+                            <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="txtLaPazNombre" Text="La Paz" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtLaPazTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtLaPazUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtLaPazLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <lvc:PieChart Width="50" Height="50"/>
+                                <lvc:PieChart Width="50" Height="50"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Button>
+
+            <Button x:Name="BtnOruro" Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                <Border CornerRadius="20" Margin="0">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
+                            <GradientStop Color="#3F6793" Offset="0.1"/>
+                            <GradientStop Color="#699CCC" Offset="0.8"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
+                        <StackPanel HorizontalAlignment="Center">
+                            <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="txtOruroNombre" Text="Oruro" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtOruroTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtOruroUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtOruroLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <lvc:PieChart Width="50" Height="50"/>
+                                <lvc:PieChart Width="50" Height="50"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Button>
+
+            <Button x:Name="BtnPotosi" Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                <Border CornerRadius="20" Margin="0">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
+                            <GradientStop Color="#3F6793" Offset="0.1"/>
+                            <GradientStop Color="#699CCC" Offset="0.8"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
+                        <StackPanel HorizontalAlignment="Center">
+                            <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="txtPotosiNombre" Text="Potosi" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtPotosiTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtPotosiUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtPotosiLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <lvc:PieChart Width="50" Height="50"/>
                                 <lvc:PieChart Width="50" Height="50"/>
@@ -101,163 +251,13 @@
                         </LinearGradientBrush>
                     </Border.Background>
                     <Grid>
-                        <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
+                        <Border x:Name="BtnTarija" Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Santa Cruz" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </Button>
-
-            <Button Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
-                <Border CornerRadius="20" Margin="0">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
-                            <GradientStop Color="#3F6793" Offset="0.1"/>
-                            <GradientStop Color="#699CCC" Offset="0.8"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Grid>
-                        <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
-                        <StackPanel HorizontalAlignment="Center">
-                            <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Pando" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </Button>
-
-            <Button Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
-                <Border CornerRadius="20" Margin="0">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
-                            <GradientStop Color="#3F6793" Offset="0.1"/>
-                            <GradientStop Color="#699CCC" Offset="0.8"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Grid>
-                        <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
-                        <StackPanel HorizontalAlignment="Center">
-                            <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Chuquisaca" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </Button>
-
-            <Button Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
-                <Border CornerRadius="20" Margin="0">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
-                            <GradientStop Color="#3F6793" Offset="0.1"/>
-                            <GradientStop Color="#699CCC" Offset="0.8"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Grid>
-                        <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
-                        <StackPanel HorizontalAlignment="Center">
-                            <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
-                            <TextBlock Text="La Paz" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </Button>
-
-            <Button Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
-                <Border CornerRadius="20" Margin="0">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
-                            <GradientStop Color="#3F6793" Offset="0.1"/>
-                            <GradientStop Color="#699CCC" Offset="0.8"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Grid>
-                        <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
-                        <StackPanel HorizontalAlignment="Center">
-                            <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Oruro" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </Button>
-
-            <Button Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
-                <Border CornerRadius="20" Margin="0">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
-                            <GradientStop Color="#3F6793" Offset="0.1"/>
-                            <GradientStop Color="#699CCC" Offset="0.8"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Grid>
-                        <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
-                        <StackPanel HorizontalAlignment="Center">
-                            <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Potosi" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </Button>
-
-            <Button Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
-                <Border CornerRadius="20" Margin="0">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0.75,0" EndPoint="0,1">
-                            <GradientStop Color="#3F6793" Offset="0.1"/>
-                            <GradientStop Color="#699CCC" Offset="0.8"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Grid>
-                        <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
-                        <StackPanel HorizontalAlignment="Center">
-                            <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
-                            <TextBlock Text="Tarija" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtTarijaNombre" Text="Tarija" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtTarijaTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtTarijaUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtTarijaLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <lvc:PieChart Width="50" Height="50"/>
                                 <lvc:PieChart Width="50" Height="50"/>

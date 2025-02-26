@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Net.NetworkInformation;
 using Sockets_Servidor.credenciales;
+using Newtonsoft.Json;
 
 namespace Sockets_Servidor
 {
@@ -27,23 +28,140 @@ namespace Sockets_Servidor
         // Diccionario para almacenar clientes activos (IP -> {Departamento, MAC})
         private Dictionary<string, (string Departamento, string MAC)> clientesActivos = new Dictionary<string, (string, string)>();
 
-        // Listas de mensajes por departamento
+        private class DepartmentControls
+        {
+            public TextBlock? Nombre { get; set; }
+            public TextBlock? TotalGb { get; set; }
+            public TextBlock? UsoGb { get; set; }
+            public TextBlock? LibreGb { get; set; }
+            public UIElement? PieChart1 { get; set; }
+            public UIElement? PieChart2 { get; set; }
+        }
+
+        // Diccionario para relacionar nombre de departamento con sus controles
+        private Dictionary<string, DepartmentControls> departmentControls;
+
+        // Asegúrate de que los nombres y las claves sean consistentes con el XAML.
+        // Por ejemplo, usamos "SantaCruz" en vez de "Santa Cruz".
         private Dictionary<string, List<string>> mensajesDepartamentos = new Dictionary<string, List<string>>
         {
             { "Cochabamba", new List<string>() },
-            { "Santa Cruz", new List<string>() },
-            { "La Paz", new List<string>() },
-            { "Oruro", new List<string>() },
-            { "Potosí", new List<string>() },
-            { "Tarija", new List<string>() },
-            { "Chuquisaca", new List<string>() },
             { "Beni", new List<string>() },
-            { "Pando", new List<string>() }
+            { "SantaCruz", new List<string>() },
+            { "Pando", new List<string>() },
+            { "Chuquisaca", new List<string>() },
+            { "LaPaz", new List<string>() },
+            { "Oruro", new List<string>() },
+            { "Potosi", new List<string>() },
+            { "Tarija", new List<string>() }
         };
+
 
         public MainWindow()
         {
             InitializeComponent();
+
+            // Estado global inicial
+            ServidoresArribatxt.Text = "Reportando 0 de 9";
+
+            // Inicializamos el diccionario de controles para cada departamento
+            departmentControls = new Dictionary<string, DepartmentControls>
+    {
+        { "Cochabamba", new DepartmentControls {
+                Nombre = txtCochabambaNombre,
+                TotalGb = txtCochaTotalGb,
+                UsoGb = txtCochaUsoGb,
+                LibreGb = txtCochaLibreGb,
+                PieChart1 = pieChart1,
+                PieChart2 = pieChart2
+            }
+        },
+        { "Beni", new DepartmentControls {
+                Nombre = txtBeniNombre,
+                TotalGb = txtBeniTotalGb,
+                UsoGb = txtBeniUsoGb,
+                LibreGb = txtBeniLibreGb,
+                PieChart1 = null,  // Si no tienes referencia, puedes omitirlo
+                PieChart2 = null
+            }
+        },
+        { "SantaCruz", new DepartmentControls {
+                Nombre = txtSantaCruzNombre,
+                TotalGb = txtSantaCruzTotalGb,
+                UsoGb = txtSantaCruzUsoGb,
+                LibreGb = txtSantaCruzLibreGb,
+                PieChart1 = null,
+                PieChart2 = null
+            }
+        },
+        { "Pando", new DepartmentControls {
+                Nombre = txtPandoNombre,
+                TotalGb = txtPandoTotalGb,
+                UsoGb = txtPandoUsoGb,
+                LibreGb = txtPandoLibreGb,
+                PieChart1 = null,
+                PieChart2 = null
+            }
+        },
+        { "Chuquisaca", new DepartmentControls {
+                Nombre = txtChuquisacaNombre,
+                TotalGb = txtChuquisacaTotalGb,
+                UsoGb = txtChuquisacaUsoGb,
+                LibreGb = txtChuquisacaLibreGb,
+                PieChart1 = null,
+                PieChart2 = null
+            }
+        },
+        { "LaPaz", new DepartmentControls {
+                Nombre = txtLaPazNombre,
+                TotalGb = txtLaPazTotalGb,
+                UsoGb = txtLaPazUsoGb,
+                LibreGb = txtLaPazLibreGb,
+                PieChart1 = null,
+                PieChart2 = null
+            }
+        },
+        { "Oruro", new DepartmentControls {
+                Nombre = txtOruroNombre,
+                TotalGb = txtOruroTotalGb,
+                UsoGb = txtOruroUsoGb,
+                LibreGb = txtOruroLibreGb,
+                PieChart1 = null,
+                PieChart2 = null
+            }
+        },
+        { "Potosi", new DepartmentControls {
+                Nombre = txtPotosiNombre,
+                TotalGb = txtPotosiTotalGb,
+                UsoGb = txtPotosiUsoGb,
+                LibreGb = txtPotosiLibreGb,
+                PieChart1 = null,
+                PieChart2 = null
+            }
+        },
+        { "Tarija", new DepartmentControls {
+                Nombre = txtTarijaNombre,
+                TotalGb = txtTarijaTotalGb,
+                UsoGb = txtTarijaUsoGb,
+                LibreGb = txtTarijaLibreGb,
+                PieChart1 = null,
+                PieChart2 = null
+            }
+        }
+    };
+
+            // Configuración inicial de cada botón: datos ocultos y nombre en rojo
+            foreach (var dep in departmentControls.Values)
+            {
+                dep.Nombre.Foreground = new SolidColorBrush(Colors.Red);
+                dep.TotalGb.Visibility = Visibility.Collapsed;
+                dep.UsoGb.Visibility = Visibility.Collapsed;
+                dep.LibreGb.Visibility = Visibility.Collapsed;
+                if (dep.PieChart1 != null)
+                    dep.PieChart1.Visibility = Visibility.Collapsed;
+                if (dep.PieChart2 != null)
+                    dep.PieChart2.Visibility = Visibility.Collapsed;
+            }
         }
 
         private async void StartServer()
@@ -86,7 +204,7 @@ namespace Sockets_Servidor
                 if (mensajesDepartamentos.ContainsKey(departamento))
                 {
                     clientesActivos[clientIP] = (departamento, clientMAC);
-                    //Dispatcher.Invoke(() => lstMensajes.Items.Add($"Nuevo cliente registrado: {clientIP} - {departamento} - {clientMAC}"));
+                    // Se puede registrar el cliente en algún log si se desea.
                 }
                 else
                 {
@@ -96,20 +214,18 @@ namespace Sockets_Servidor
                     return;
                 }
 
-                // Leer mensajes periódicos
+                // Mientras el cliente esté conectado se leen sus mensajes
                 while (client.Connected)
                 {
                     bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
                     if (bytesRead == 0) break;
 
                     string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
-                    //Dispatcher.Invoke(() => lstMensajes.Items.Add($"[{departamento}] {clientIP}: {receivedData}"));
-
                     // Guardar mensaje en la lista del departamento correspondiente
                     if (mensajesDepartamentos.ContainsKey(departamento))
                     {
                         mensajesDepartamentos[departamento].Add(receivedData);
-                        //ActualizarListaDepartamento(departamento, receivedData);
+                        ActualizarListaDepartamento(departamento, receivedData);
                     }
                 }
             }
@@ -127,6 +243,7 @@ namespace Sockets_Servidor
                 if (departamento != null && clientesActivos.ContainsKey(clientIP))
                 {
                     clientesActivos.Remove(clientIP);
+                    Dispatcher.Invoke(() => ActualizarEstadoDepartamento(departamento));
                 }
             }
         }
@@ -150,24 +267,99 @@ namespace Sockets_Servidor
             return "Desconocido";
         }
 
-        //private void ActualizarListaDepartamento(string departamento, string mensaje)
-        //{
-        //    Dispatcher.Invoke(() =>
-        //    {
-        //        switch (departamento)
-        //        {
-        //            case "Cochabamba": lstCochabamba.Items.Add(mensaje); break;
-        //            //case "Santa Cruz": lstSantacruz.Items.Add(mensaje); break;
-        //            //case "La Paz": lstLapaz.Items.Add(mensaje); break;
-        //            //case "Oruro": lstOruro.Items.Add(mensaje); break;
-        //            //case "Potosí": lstPotosi.Items.Add(mensaje); break;
-        //            //case "Tarija": lstTarija.Items.Add(mensaje); break;
-        //            //case "Chuquisaca": lstChuquisaca.Items.Add(mensaje); break;
-        //            //case "Beni": lstBeni.Items.Add(mensaje); break;
-        //            case "Pando": lstPando.Items.Add(mensaje); break;
-        //        }
-        //    });
-        //}
+        private (long usado, long libre) ParseEstadoMessage(string mensaje)
+        {
+            try
+            {
+                // Intenta deserializar si el mensaje parece JSON
+                if (mensaje.TrimStart().StartsWith("{"))
+                {
+                    dynamic msg = JsonConvert.DeserializeObject(mensaje);
+                    // Se espera que msg.usado y msg.libre sean numéricos
+                    long usado = Convert.ToInt64(msg.usado);
+                    long libre = Convert.ToInt64(msg.libre);
+                    return (usado, libre);
+                }
+            }
+            catch { /* Si falla, se procede a parsear el texto */ }
+
+            try
+            {
+                // Extracción manual del mensaje en texto
+                // Ejemplo: "Almacenamiento - Usado: 123 MB, Libre: 456 MB"
+                int indexUsado = mensaje.IndexOf("Usado:");
+                int indexMB1 = mensaje.IndexOf("MB", indexUsado);
+                string usadoStr = mensaje.Substring(indexUsado + "Usado:".Length, indexMB1 - (indexUsado + "Usado:".Length)).Trim();
+                long usado = long.Parse(usadoStr);
+
+                int indexLibre = mensaje.IndexOf("Libre:");
+                int indexMB2 = mensaje.IndexOf("MB", indexLibre);
+                string libreStr = mensaje.Substring(indexLibre + "Libre:".Length, indexMB2 - (indexLibre + "Libre:".Length)).Trim();
+                long libre = long.Parse(libreStr);
+
+                return (usado, libre);
+            }
+            catch (Exception ex)
+            {
+                // Si falla el parseo, se retornan valores 0
+                Console.WriteLine("Error al parsear mensaje: " + ex.Message);
+                return (0, 0);
+            }
+        }
+
+        private void ActualizarListaDepartamento(string departamento, string mensaje)
+        {
+            var (usado, libre) = ParseEstadoMessage(mensaje);
+
+            Dispatcher.Invoke(() =>
+            {
+                if (departmentControls.TryGetValue(departamento, out DepartmentControls controls))
+                {
+                    // Aquí se muestra la suma de MB, ajusta la unidad si es necesario.
+                    controls.TotalGb.Text = (usado + libre) + " MB";
+                    controls.UsoGb.Text = usado + " MB";
+                    controls.LibreGb.Text = libre + " MB";
+                }
+                ActualizarEstadoDepartamento(departamento);
+            });
+        }
+
+        private void ActualizarEstadoDepartamento(string departamento)
+        {
+            bool activo = clientesActivos.Values.Any(c => c.Departamento == departamento);
+            Dispatcher.Invoke(() =>
+            {
+                if (departmentControls.TryGetValue(departamento, out DepartmentControls controls))
+                {
+                    if (activo)
+                    {
+                        controls.Nombre.Foreground = new SolidColorBrush(Colors.White);
+                        controls.TotalGb.Visibility = Visibility.Visible;
+                        controls.UsoGb.Visibility = Visibility.Visible;
+                        controls.LibreGb.Visibility = Visibility.Visible;
+                        if (controls.PieChart1 != null)
+                            controls.PieChart1.Visibility = Visibility.Visible;
+                        if (controls.PieChart2 != null)
+                            controls.PieChart2.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        controls.Nombre.Foreground = new SolidColorBrush(Colors.Red);
+                        controls.TotalGb.Visibility = Visibility.Collapsed;
+                        controls.UsoGb.Visibility = Visibility.Collapsed;
+                        controls.LibreGb.Visibility = Visibility.Collapsed;
+                        if (controls.PieChart1 != null)
+                            controls.PieChart1.Visibility = Visibility.Collapsed;
+                        if (controls.PieChart2 != null)
+                            controls.PieChart2.Visibility = Visibility.Collapsed;
+                    }
+                }
+                // Actualiza el contador global de departamentos con clientes activos
+                int activeCount = clientesActivos.Values.Select(x => x.Departamento).Distinct().Count();
+                ServidoresArribatxt.Text = $"Reportando {activeCount} de 9";
+            });
+        }
+
 
         private void CerrarApp_Click(object sender, RoutedEventArgs e)
         {
