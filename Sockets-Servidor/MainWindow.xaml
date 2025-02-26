@@ -8,12 +8,13 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <TextBlock Text="Mensajes recibidos:" FontSize="16" Margin="10,10,0,0"/>
-        <ListBox Name="lstMensajes" Margin="10,40,610,205"/>
+        <ListBox Name="lstMensajes" Margin="10,40,490,205"/>
         <Button Content="Iniciar Servidor" Width="150" Height="40" Margin="10,260,0,0" Click="BtnIniciar_Click"/>
         <TextBlock Name="txtEstado" Text="Servidor detenido" FontSize="14" Margin="180,270,390,125"/>
-        <ListBox x:Name="lstCochabamba" Margin="210,39,410,206"/>
-        <TextBlock x:Name="txtPuerto" Text="Servidor detenido" FontSize="14" Margin="460,269,110,126"/>
-        <ListBox x:Name="lstPando" Margin="410,39,210,206"/>
+        <ListBox x:Name="lstCochabamba" Margin="345,39,275,206"/>
+        <TextBlock x:Name="txtPuerto" Text="Servidor detenido" FontSize="14" Margin="460,269,35,126"/>
+        <ListBox x:Name="lstPando" Margin="580,40,40,205"/>
+        <Button x:Name="btn_tempo" Content="IR" HorizontalAlignment="Left" Margin="655,329,0,0" VerticalAlignment="Top" Width="85" Click="btn_tempo_Click"/>
 
     </Grid>
 </Window>

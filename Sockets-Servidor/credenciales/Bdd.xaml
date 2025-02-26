@@ -1,0 +1,17 @@
+﻿<Window x:Class="Sockets_Servidor.credenciales.Bdd"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Sockets_Servidor.credenciales"
+        mc:Ignorable="d"
+        Title="Bdd" Height="450" Width="800">
+    <Grid>
+        <StackPanel Margin="10">
+            <TextBox x:Name="NameTextBox" Margin="0,0,0,10"/>
+            <TextBox x:Name="AgeTextBox" Margin="0,0,0,10"/>
+            <Button Content="Agregar Usuario" Click="AddUser_Click"/>
+            <TextBlock x:Name="ResultTextBlock" Margin="0,10,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>

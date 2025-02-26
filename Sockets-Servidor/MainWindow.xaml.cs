@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
 using System.Net.NetworkInformation;
+using Sockets_Servidor.credenciales;
 
 namespace Sockets_Servidor
 {
@@ -102,7 +103,7 @@ namespace Sockets_Servidor
                     if (bytesRead == 0) break;
 
                     string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
-                    Dispatcher.Invoke(() => lstMensajes.Items.Add($"[{departamento}] {clientIP}: {receivedData}"));
+                    //Dispatcher.Invoke(() => lstMensajes.Items.Add($"[{departamento}] {clientIP}: {receivedData}"));
 
                     // Guardar mensaje en la lista del departamento correspondiente
                     if (mensajesDepartamentos.ContainsKey(departamento))
@@ -179,6 +180,14 @@ namespace Sockets_Servidor
             serverRunning = false;
             server?.Stop();
             txtEstado.Text = "Servidor detenido.";
+        }
+
+        private void btn_tempo_Click(object sender, RoutedEventArgs e)
+        {
+            // navegar a la ventana Bdd
+            Bdd ventana = new Bdd();
+            ventana.Show();
+            this.Close();
         }
     }
 }
