@@ -55,9 +55,9 @@
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
                             <TextBlock Text="Cochabamba" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
-                            <TextBlock Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtCochaTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtCochaUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtCochaLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <lvc:PieChart Width="50" Height="50"/>
                                 <lvc:PieChart Width="50" Height="50"/>

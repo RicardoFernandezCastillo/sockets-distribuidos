@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Net.NetworkInformation;
 using Sockets_Servidor.credenciales;
+using Newtonsoft.Json;
 
 namespace Sockets_Servidor
 {
@@ -109,7 +110,7 @@ namespace Sockets_Servidor
                     if (mensajesDepartamentos.ContainsKey(departamento))
                     {
                         mensajesDepartamentos[departamento].Add(receivedData);
-                        //ActualizarListaDepartamento(departamento, receivedData);
+                        ActualizarListaDepartamento(departamento, receivedData);
                     }
                 }
             }
@@ -150,24 +151,32 @@ namespace Sockets_Servidor
             return "Desconocido";
         }
 
-        //private void ActualizarListaDepartamento(string departamento, string mensaje)
-        //{
-        //    Dispatcher.Invoke(() =>
-        //    {
-        //        switch (departamento)
-        //        {
-        //            case "Cochabamba": lstCochabamba.Items.Add(mensaje); break;
-        //            //case "Santa Cruz": lstSantacruz.Items.Add(mensaje); break;
-        //            //case "La Paz": lstLapaz.Items.Add(mensaje); break;
-        //            //case "Oruro": lstOruro.Items.Add(mensaje); break;
-        //            //case "Potosí": lstPotosi.Items.Add(mensaje); break;
-        //            //case "Tarija": lstTarija.Items.Add(mensaje); break;
-        //            //case "Chuquisaca": lstChuquisaca.Items.Add(mensaje); break;
-        //            //case "Beni": lstBeni.Items.Add(mensaje); break;
-        //            case "Pando": lstPando.Items.Add(mensaje); break;
-        //        }
-        //    });
-        //}
+        private void ActualizarListaDepartamento(string departamento, string mensaje)
+        {
+            //el mensaje viene en json string estado = $"{{\"usado\": {espacioUsado / (1024 * 1024)}, \"libre\": {espacioLibre / (1024 * 1024)}}}";
+            //descerializar el mensaje
+            var mensajeDeserializado = JsonConvert.DeserializeObject<dynamic>(mensaje);
+            //convertir a GB
+            //double espacioUsado = double.Parse(int.Parse(mensajeDeserializado.usado)) / (1024 * 1024);
+            //double espacioLibre = double.Parse(int.Parse(mensajeDeserializado.libre)) / (1024 * 1024);
+            //double espacioTotal = espacioUsado + espacioLibre;
+            Dispatcher.Invoke(() =>
+            {
+                switch (departamento)
+                {
+                    case "Cochabamba": txtCochaTotalGb.Text = (mensajeDeserializado.usado + mensajeDeserializado.libre) + "GB"; txtCochaUsoGb.Text = mensajeDeserializado.usado + "GB"; txtCochaLibreGb.Text = mensajeDeserializado.libre + "GB"; break;
+                        //case "Cochabamba": lstCochabamba.Items.Add(mensaje); break;
+                        //case "Santa Cruz": lstSantacruz.Items.Add(mensaje); break;
+                        //case "La Paz": lstLapaz.Items.Add(mensaje); break;
+                        //case "Oruro": lstOruro.Items.Add(mensaje); break;
+                        //case "Potosí": lstPotosi.Items.Add(mensaje); break;
+                        //case "Tarija": lstTarija.Items.Add(mensaje); break;
+                        //case "Chuquisaca": lstChuquisaca.Items.Add(mensaje); break;
+                        //case "Beni": lstBeni.Items.Add(mensaje); break;
+                        //case "Pando": lstPando.Items.Add(mensaje); break;
+                }
+            });
+        }
 
         private void CerrarApp_Click(object sender, RoutedEventArgs e)
         {
