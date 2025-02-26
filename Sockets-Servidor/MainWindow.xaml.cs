@@ -189,5 +189,21 @@ namespace Sockets_Servidor
             ventana.Show();
             this.Close();
         }
+
+        private void lstPando_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lstPando.SelectedItem != null)
+            {
+                string serverIP = "192.168.1.1"; // Reemplazar con la IP real del servidor
+                string serverName = "Servidor Principal"; // Reemplazar con el nombre real
+                string departamento = "Pando";
+                List<string> mensajes = mensajesDepartamentos[departamento];
+
+                Log logWindow = new Log(serverIP, serverName, departamento, clientesActivos, mensajes);
+                logWindow.Show();
+            }
+
+        }
+    
     }
 }
