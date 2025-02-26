@@ -86,7 +86,7 @@ namespace Sockets_Servidor
                 if (mensajesDepartamentos.ContainsKey(departamento))
                 {
                     clientesActivos[clientIP] = (departamento, clientMAC);
-                    Dispatcher.Invoke(() => lstMensajes.Items.Add($"Nuevo cliente registrado: {clientIP} - {departamento} - {clientMAC}"));
+                    //Dispatcher.Invoke(() => lstMensajes.Items.Add($"Nuevo cliente registrado: {clientIP} - {departamento} - {clientMAC}"));
                 }
                 else
                 {
@@ -109,17 +109,17 @@ namespace Sockets_Servidor
                     if (mensajesDepartamentos.ContainsKey(departamento))
                     {
                         mensajesDepartamentos[departamento].Add(receivedData);
-                        ActualizarListaDepartamento(departamento, receivedData);
+                        //ActualizarListaDepartamento(departamento, receivedData);
                     }
                 }
             }
             catch (IOException)
             {
-                Dispatcher.Invoke(() => lstMensajes.Items.Add($"Cliente desconectado: {clientIP} ({departamento})"));
+                //Dispatcher.Invoke(() => lstMensajes.Items.Add($"Cliente desconectado: {clientIP} ({departamento})"));
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => lstMensajes.Items.Add($"Error con cliente {clientIP}: {ex.Message}"));
+                //Dispatcher.Invoke(() => lstMensajes.Items.Add($"Error con cliente {clientIP}: {ex.Message}"));
             }
             finally
             {
@@ -150,23 +150,28 @@ namespace Sockets_Servidor
             return "Desconocido";
         }
 
-        private void ActualizarListaDepartamento(string departamento, string mensaje)
+        //private void ActualizarListaDepartamento(string departamento, string mensaje)
+        //{
+        //    Dispatcher.Invoke(() =>
+        //    {
+        //        switch (departamento)
+        //        {
+        //            case "Cochabamba": lstCochabamba.Items.Add(mensaje); break;
+        //            //case "Santa Cruz": lstSantacruz.Items.Add(mensaje); break;
+        //            //case "La Paz": lstLapaz.Items.Add(mensaje); break;
+        //            //case "Oruro": lstOruro.Items.Add(mensaje); break;
+        //            //case "Potosí": lstPotosi.Items.Add(mensaje); break;
+        //            //case "Tarija": lstTarija.Items.Add(mensaje); break;
+        //            //case "Chuquisaca": lstChuquisaca.Items.Add(mensaje); break;
+        //            //case "Beni": lstBeni.Items.Add(mensaje); break;
+        //            case "Pando": lstPando.Items.Add(mensaje); break;
+        //        }
+        //    });
+        //}
+
+        private void CerrarApp_Click(object sender, RoutedEventArgs e)
         {
-            Dispatcher.Invoke(() =>
-            {
-                switch (departamento)
-                {
-                    case "Cochabamba": lstCochabamba.Items.Add(mensaje); break;
-                    //case "Santa Cruz": lstSantacruz.Items.Add(mensaje); break;
-                    //case "La Paz": lstLapaz.Items.Add(mensaje); break;
-                    //case "Oruro": lstOruro.Items.Add(mensaje); break;
-                    //case "Potosí": lstPotosi.Items.Add(mensaje); break;
-                    //case "Tarija": lstTarija.Items.Add(mensaje); break;
-                    //case "Chuquisaca": lstChuquisaca.Items.Add(mensaje); break;
-                    //case "Beni": lstBeni.Items.Add(mensaje); break;
-                    case "Pando": lstPando.Items.Add(mensaje); break;
-                }
-            });
+            Application.Current.Shutdown();
         }
 
         private void BtnIniciar_Click(object sender, RoutedEventArgs e)
