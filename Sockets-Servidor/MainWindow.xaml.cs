@@ -14,6 +14,9 @@ using System.IO;
 using System.Net.NetworkInformation;
 using Sockets_Servidor.credenciales;
 using Newtonsoft.Json;
+using Sockets_Servidor.histograma_grafico;
+using System.Globalization;
+using System.Collections.ObjectModel;
 using Google.Cloud.Firestore;
 
 namespace Sockets_Servidor
@@ -289,6 +292,12 @@ namespace Sockets_Servidor
                     {
                         mensajesDepartamentos[departamento].Add(receivedData);
                         ActualizarListaDepartamento(departamento, receivedData);
+
+                        // Actualizar el gráfico si la ventana está abierta
+                        if (ventanaGrafico != null && ventanaGrafico.IsVisible)
+                        {
+                            Dispatcher.Invoke(() => ActualizarGrafico(departamento));
+                        }
                     }
                 }
             }
@@ -566,10 +575,134 @@ namespace Sockets_Servidor
 
         private void btn_tempo_Click(object sender, RoutedEventArgs e)
         {
-            // navegar a la ventana Bdd
+            
             Bdd ventana = new Bdd();
             ventana.Show();
             this.Close();
+        }
+
+
+
+        private W_Grafico ventanaGrafico; // Variable para mantener la ventana del gráfico abierta
+        private Dictionary<string, DatosGrafico> historialGraficos = new Dictionary<string, DatosGrafico>(); // Historial de datos por departamento
+
+        private void Grid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(
+                "¿Desea ver el histograma?",
+                "Confirmación",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question
+            );
+
+            if (result == MessageBoxResult.Yes)
+            {
+                
+                var grid = sender as Grid;
+                var departamento = grid?.Tag as string; 
+
+                if (departamento != null && mensajesDepartamentos.ContainsKey(departamento))
+                {
+                    
+                    int activeCount = clientesActivos.Values.Select(x => x.Departamento).Distinct().Count();
+
+                    
+                    if (ventanaGrafico == null || !ventanaGrafico.IsVisible)
+                    {
+                        ventanaGrafico = new W_Grafico();
+                        ventanaGrafico.Show();
+                    }
+
+                    
+                    ventanaGrafico.ActualizarServidoresReportando(activeCount);
+
+                
+                    ActualizarGrafico(departamento);
+                }
+            }
+        }
+
+
+        private void ActualizarGrafico(string departamento)
+        {
+            if (!mensajesDepartamentos.ContainsKey(departamento) || mensajesDepartamentos[departamento].Count == 0)
+                return;
+
+            var ultimoMensaje = mensajesDepartamentos[departamento].LastOrDefault();
+            if (ultimoMensaje != null)
+            {
+                dynamic msg = JsonConvert.DeserializeObject(ultimoMensaje);
+
+                dynamic discoConMasAlmacenamiento = null;
+                double maxAlmacenamiento = 0;
+
+                double ramUsadaMB = Convert.ToDouble(((string)msg.RAM.Usado).Replace(" MB", "").Trim(), CultureInfo.InvariantCulture);
+                double ramTotalMB = Convert.ToDouble(((string)msg.RAM.Total).Replace(" MB", "").Trim(), CultureInfo.InvariantCulture);
+                double porcentajeUsoRAM = (ramUsadaMB / ramTotalMB) * 100;
+
+                foreach (var disco in msg.Discos)
+                {
+                    double discoTotalGB = Convert.ToDouble(((string)disco.DiscoTotalGB).Replace(",", "."), CultureInfo.InvariantCulture);
+                    if (discoTotalGB > maxAlmacenamiento)
+                    {
+                        maxAlmacenamiento = discoTotalGB;
+                        discoConMasAlmacenamiento = disco;
+                    }
+                }
+
+                if (discoConMasAlmacenamiento != null)
+                {
+                    double espacioUsadoGB = Convert.ToDouble(((string)discoConMasAlmacenamiento.EspacioUsadoGB).Replace(",", "."), CultureInfo.InvariantCulture);
+                    double espacioLibreGB = Convert.ToDouble(((string)discoConMasAlmacenamiento.EspacioLibreGB).Replace(",", "."), CultureInfo.InvariantCulture);
+                    double discoTotalGB = Convert.ToDouble(((string)discoConMasAlmacenamiento.DiscoTotalGB).Replace(",", "."), CultureInfo.InvariantCulture);
+
+                    if (!historialGraficos.ContainsKey(departamento))
+                    {
+                        historialGraficos[departamento] = new DatosGrafico
+                        {
+                            NombreRouter = departamento,
+                            TotalEspacio = discoTotalGB.ToString("F2") + " GB",
+                            UsoEspacio = espacioUsadoGB.ToString("F2") + " GB",
+                            LibreEspacio = espacioLibreGB.ToString("F2") + " GB",
+                            RAM = msg.RAM.Total,
+                            IP = msg.IP,
+                            Historial = new ObservableCollection<DatosGrafico.HistorialUso>(),
+                            HistogramaValores = new List<double>(),
+                            HistogramaLabels = new List<string>()
+                        };
+                    }
+
+                    var datos = historialGraficos[departamento];
+
+                   
+                    DateTime fechaHora = DateTime.TryParse(msg.Fecha.ToString(), out DateTime fechaMsg) ? fechaMsg : DateTime.Now;
+                    string fechaFormateada = fechaHora.ToString("yyyy-MM-dd");
+                    string horaFormateada = fechaHora.ToString("HH:mm:ss");
+
+                    datos.Historial.Add(new DatosGrafico.HistorialUso
+                    {
+                        Fecha = fechaFormateada,
+                        Hora = horaFormateada,
+                        UsoDiscoTB = Math.Round(porcentajeUsoRAM, 1)
+                    });
+
+                    datos.HistogramaValores.Add(Math.Round(porcentajeUsoRAM, 1));
+
+                 
+                    string etiquetaHistograma = horaFormateada;
+                    datos.HistogramaLabels.Add(etiquetaHistograma);
+
+                  
+                    if (datos.HistogramaLabels.Count > 10)
+                    {
+                        datos.HistogramaLabels.RemoveAt(0);
+                        datos.HistogramaValores.RemoveAt(0);
+                    }
+
+                  
+                    ventanaGrafico.ActualizarDatos(datos);
+                }
+            }
         }
 
         private void ActualizarGrafico(string departamento, double usado, double libre)
@@ -605,4 +738,8 @@ namespace Sockets_Servidor
             await docRef.SetAsync(new { Nombre = name, Fecha = Timestamp.GetCurrentTimestamp(), Estado = estado});
         }
     }
+
+    
 }
+    
+    

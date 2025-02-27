@@ -21,6 +21,7 @@
                     <GradientStop Color="#2B2A2A" Offset="0"/>
                 </LinearGradientBrush>
             </Border.Background>
+          
         </Border>
         <Button Width="30" Height="30"
         HorizontalAlignment="Right" VerticalAlignment="Top"
@@ -50,7 +51,7 @@
                             <GradientStop Color="#699CCC" Offset="0.8"/>
                         </LinearGradientBrush>
                     </Border.Background>
-                    <Grid>
+                    <Grid MouseRightButtonDown="Grid_MouseRightButtonDown" Tag="Cochabamba">
                         <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
@@ -90,7 +91,7 @@
                             <GradientStop Color="#699CCC" Offset="0.8"/>
                         </LinearGradientBrush>
                     </Border.Background>
-                    <Grid>
+                    <Grid MouseRightButtonDown="Grid_MouseRightButtonDown" Tag="Beni">
                         <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
@@ -125,7 +126,7 @@
                             <GradientStop Color="#699CCC" Offset="0.8"/>
                         </LinearGradientBrush>
                     </Border.Background>
-                    <Grid>
+                    <Grid MouseRightButtonDown="Grid_MouseRightButtonDown" Tag="Santa Cruz">
                         <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
@@ -160,7 +161,7 @@
                             <GradientStop Color="#699CCC" Offset="0.8"/>
                         </LinearGradientBrush>
                     </Border.Background>
-                    <Grid>
+                    <Grid MouseRightButtonDown="Grid_MouseRightButtonDown" Tag="Pando">
                         <Border x:Name="BtnPando" Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
@@ -194,7 +195,7 @@
                             <GradientStop Color="#699CCC" Offset="0.8"/>
                         </LinearGradientBrush>
                     </Border.Background>
-                    <Grid>
+                    <Grid MouseRightButtonDown="Grid_MouseRightButtonDown" Tag="Chuquisaca">
                         <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
@@ -228,7 +229,7 @@
                             <GradientStop Color="#699CCC" Offset="0.8"/>
                         </LinearGradientBrush>
                     </Border.Background>
-                    <Grid>
+                    <Grid MouseRightButtonDown="Grid_MouseRightButtonDown" Tag="La paz">
                         <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
@@ -261,7 +262,7 @@
                             <GradientStop Color="#699CCC" Offset="0.8"/>
                         </LinearGradientBrush>
                     </Border.Background>
-                    <Grid>
+                    <Grid MouseRightButtonDown="Grid_MouseRightButtonDown" Tag="Oruro">
                         <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
@@ -294,7 +295,7 @@
                             <GradientStop Color="#699CCC" Offset="0.8"/>
                         </LinearGradientBrush>
                     </Border.Background>
-                    <Grid>
+                    <Grid MouseRightButtonDown="Grid_MouseRightButtonDown" Tag="Potosi">
                         <Border Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
@@ -327,7 +328,7 @@
                             <GradientStop Color="#699CCC" Offset="0.8"/>
                         </LinearGradientBrush>
                     </Border.Background>
-                    <Grid>
+                    <Grid MouseRightButtonDown="Grid_MouseRightButtonDown" Tag="Tarija">
                         <Border x:Name="BtnTarija" Background="White" Height="200" Width="180" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="20" Opacity="0.3" Margin="10,10,0,0"/>
                         <StackPanel HorizontalAlignment="Center">
                             <Image Source="image/router-2-128.png" Height="50" HorizontalAlignment="Center"/>
