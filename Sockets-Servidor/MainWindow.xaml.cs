@@ -347,7 +347,6 @@ namespace Sockets_Servidor
                     }
                     else
                     {
-                        // Al no haber clientes activos, se restaura el estado por defecto:
                         controls.Nombre.Foreground = new SolidColorBrush(Colors.Red);
                         controls.TotalGb.Visibility = Visibility.Collapsed;
                         controls.UsoGb.Visibility = Visibility.Collapsed;
@@ -357,13 +356,11 @@ namespace Sockets_Servidor
                         if (controls.PieChart2 != null)
                             controls.PieChart2.Visibility = Visibility.Collapsed;
 
-                        // Restauramos los textos por defecto (según lo definido en el XAML)
                         controls.TotalGb.Text = "400 GB";
                         controls.UsoGb.Text = "24 GB Uso";
                         controls.LibreGb.Text = "376 GB Libre";
                     }
                 }
-                // Actualiza el contador global de departamentos con clientes activos
                 int activeCount = clientesActivos.Values.Select(x => x.Departamento).Distinct().Count();
                 ServidoresArribatxt.Text = $"Reportando {activeCount} de 9";
             });
