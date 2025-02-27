@@ -195,7 +195,7 @@ namespace Sockets_Servidor
             string departamento = null;
 
             NetworkStream stream = client.GetStream();
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[4094];
 
             try
             {
@@ -222,7 +222,10 @@ namespace Sockets_Servidor
                 while (client.Connected)
                 {
                     bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                    if (bytesRead == 0) break;
+                    if (bytesRead == 0) {
+                        MessageBox.Show("Cliente desconectado: " + clientIP + " (" + departamento + ")");
+                        break;
+                    } 
 
                     string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
                     if (mensajesDepartamentos.ContainsKey(departamento))
@@ -238,14 +241,22 @@ namespace Sockets_Servidor
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error con cliente {clientIP}: {ex.Message}");
+                Dispatcher.Invoke(() => ActualizarEstadoDepartamento(departamento));
                 //Dispatcher.Invoke(() => lstMensajes.Items.Add($"Error con cliente {clientIP}: {ex.Message}"));
             }
             finally
             {
+                //client.Close();
+                //if (departamento != null && clientesActivos.ContainsKey(clientIP))
+                //{
+                //    clientesActivos.Remove(clientIP);
+                //    Dispatcher.Invoke(() => ActualizarEstadoDepartamento(departamento));
+                //}
                 client.Close();
-                if (departamento != null && clientesActivos.ContainsKey(clientIP))
+                if (departamento != null && clientesActivos.ContainsKey(clientKey))
                 {
-                    clientesActivos.Remove(clientIP);
+                    clientesActivos.Remove(clientKey);
                     Dispatcher.Invoke(() => ActualizarEstadoDepartamento(departamento));
                 }
             }
@@ -312,16 +323,57 @@ namespace Sockets_Servidor
 
         private void ActualizarListaDepartamento(string departamento, string mensaje)
         {
-            var (usado, libre) = ParseEstadoMessage(mensaje);
+            //descerializar mensaje Json
+            dynamic msg = JsonConvert.DeserializeObject(mensaje);
+            //var (usado, libre) = ParseEstadoMessage(mensaje);
+            /*
+            === Datos Recibidos ===
+                {
+                  "Fecha": "2025-02-26 21:41:43",
+                  "Departamento": "Pando",
+                  "NombreEquipo": "LAPTOP-27QI9R81",
+                  "Usuario": "rf924",
+                  "IP": "192.168.1.12",
+                  "MAC": "0A-00-27-00-00-17",
+                  "Discos": [
+                    {
+                      "Disco": "C:\\",
+                      "TipoDisco": "Fixed",
+                      "SistemaArchivos": "NTFS",
+                      "DiscoTotalGB": "338,33",
+                      "EspacioUsadoGB": "323,86",
+                      "EspacioLibreGB": "14,46",
+                      "PorcentajeUso": "95,72%"
+                    },
+                    {
+                      "Disco": "D:\\",
+                      "TipoDisco": "Fixed",
+                      "SistemaArchivos": "NTFS",
+                      "DiscoTotalGB": "137,02",
+                      "EspacioUsadoGB": "122,47",
+                      "EspacioLibreGB": "14,55",
+                      "PorcentajeUso": "89,38%"
+                    }
+                  ],
+                  "RAM": {
+                    "Total": "19789 MB",
+                    "Usado": "17562 MB"
+                  }
+                }
+
+            */
 
             Dispatcher.Invoke(() =>
             {
                 if (departmentControls.TryGetValue(departamento, out DepartmentControls controls))
                 {
                     // Aquí se muestra la suma de MB, ajusta la unidad si es necesario.
-                    controls.TotalGb.Text = (usado + libre) + " MB";
-                    controls.UsoGb.Text = usado + " MB";
-                    controls.LibreGb.Text = libre + " MB";
+                    //controls.TotalGb.Text = (usado + libre) + " GB";
+                    //controls.UsoGb.Text = usado + " GB";
+                    //controls.LibreGb.Text = libre + " GB";
+                    controls.TotalGb.Text = msg.Discos[0].DiscoTotalGB + " GB Total";
+                    controls.UsoGb.Text = msg.Discos[0].EspacioUsadoGB + " GB Uso";
+                    controls.LibreGb.Text = msg.Discos[0].EspacioLibreGB + " GB Libre";
                 }
                 ActualizarEstadoDepartamento(departamento);
             });
@@ -330,6 +382,7 @@ namespace Sockets_Servidor
         private void ActualizarEstadoDepartamento(string departamento)
         {
             bool activo = clientesActivos.Values.Any(c => c.Departamento == departamento);
+            Console.WriteLine($"Clientes activos en {departamento}: {clientesActivos.Values.Count(c => c.Departamento == departamento)}");
             Dispatcher.Invoke(() =>
             {
                 if (departmentControls.TryGetValue(departamento, out DepartmentControls controls))
