@@ -35,7 +35,7 @@
                 <Image Source="image/Logo.png" Height="100" Width="100" />
                 <StackPanel Margin="10,0,0,0">
                     <TextBlock Text="Monitor Nacional de Almacenamiento" FontSize="24" FontWeight="Bold" Foreground="White" />
-                    <TextBlock Text="Total: 74 TB - Usado: 61 GB - Libre: 13 GB" FontSize="14" Foreground="White" />
+                    <TextBlock x:Name="txtAlmacenamientoServer" Text="Total: 74 TB - Usado: 61 GB - Libre: 13 GB" FontSize="14" Foreground="White" />
                     <TextBlock x:Name="ServidoresArribatxt" Text="Reportando 0 de 9" FontSize="12" Foreground="White" />
                 </StackPanel>
             </StackPanel>
@@ -58,14 +58,29 @@
                             <TextBlock x:Name="txtCochaTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White" Visibility="Collapsed"/>
                             <TextBlock x:Name="txtCochaUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White" Visibility="Collapsed"/>
                             <TextBlock x:Name="txtCochaLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White" Visibility="Collapsed"/>
+                            <TextBlock x:Name="txtCochaEstado" Text="Desconectado" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart x:Name="pieChart1" Width="50" Height="50" Visibility="Collapsed"/>
-                                <lvc:PieChart x:Name="pieChart2" Width="50" Height="50" Visibility="Collapsed"/>
+                                <!--<lvc:PieChart x:Name="pieChart1" Width="50" Height="50" Visibility="Collapsed"/>
+                                <lvc:PieChart x:Name="pieChart2" Width="50" Height="50" Visibility="Collapsed"/>-->
+                                <lvc:PieChart Name="pieChartCochabamba" Width="60" Height="60" Margin="10" Visibility="Hidden">
+                                    <lvc:PieChart.Series>
+                                        <lvc:PieSeries x:Name="pieUsadoCochabamba" Title="Usado" Values="175" DataLabels="True" Fill="Red" />
+                                        <lvc:PieSeries x:Name="pieDisponibleCochabamba" Title="Libre" Values="27" DataLabels="True" Fill="Green" />
+                                    </lvc:PieChart.Series>
+                                    
+                                </lvc:PieChart>
+                                
+
                             </StackPanel>
+
                         </StackPanel>
+
                     </Grid>
                 </Border>
             </Button>
+
+
+
 
             <Button x:Name="BtnBeni" Width="180" Height="250" Margin="10" Background="Transparent" BorderThickness="0" Cursor="Hand">
                 <Border CornerRadius="20" Margin="0">
@@ -83,10 +98,20 @@
                             <TextBlock x:Name="txtBeniTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtBeniUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtBeniLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtBeniEstado" Text="Desconectado" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
+                                <!--<lvc:PieChart Width="50" Height="50"/>
+                                <lvc:PieChart Width="50" Height="50"/>-->
+
+                                <lvc:PieChart Name="pieChartBeni" Width="60" Height="60" Margin="10" Visibility="Hidden">
+                                    <lvc:PieChart.Series>
+                                        <lvc:PieSeries Title="Usado" Values="175" DataLabels="True" Fill="Red" />
+                                        <lvc:PieSeries Title="Libre" Values="27" DataLabels="True" Fill="Green" />
+                                    </lvc:PieChart.Series>
+                                </lvc:PieChart>
                             </StackPanel>
+                            
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -108,9 +133,19 @@
                             <TextBlock x:Name="txtSantaCruzTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtSantaCruzUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtSantaCruzLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtSantaCruzEstado" Text="Desconectado" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
+                                <!--<lvc:PieChart Width="50" Height="50"/>
+                                <lvc:PieChart Width="50" Height="50"/>-->
+
+                                <lvc:PieChart Name="pieChartSantaCruz" Width="60" Height="60" Margin="10" Visibility="Hidden">
+                                    <lvc:PieChart.Series>
+                                        <lvc:PieSeries Title="Usado" Values="175" DataLabels="True" Fill="Red" />
+                                        <lvc:PieSeries Title="Libre" Values="27" DataLabels="True" Fill="Green" />
+                                    </lvc:PieChart.Series>
+                                </lvc:PieChart>
+
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -133,9 +168,18 @@
                             <TextBlock x:Name="txtPandoTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtPandoUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtPandoLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtPandoEstado" Text="Desconectado" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
+                                <!--<lvc:PieChart Width="50" Height="50"/>
+                                <lvc:PieChart Width="50" Height="50"/>-->
+
+                                <lvc:PieChart Name="pieChartPando" Width="60" Height="60" Margin="10" Visibility="Hidden">
+                                    <lvc:PieChart.Series>
+                                        <lvc:PieSeries Title="Usado" Values="175" DataLabels="True" Fill="Red" />
+                                        <lvc:PieSeries Title="Libre" Values="27" DataLabels="True" Fill="Green" />
+                                    </lvc:PieChart.Series>
+                                </lvc:PieChart>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -158,9 +202,18 @@
                             <TextBlock x:Name="txtChuquisacaTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtChuquisacaUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtChuquisacaLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtChuquisacaEstado" Text="Desconectado" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
+                                <!--<lvc:PieChart Width="50" Height="50"/>
+                                <lvc:PieChart Width="50" Height="50"/>-->
+
+                                <lvc:PieChart Name="pieChartChuquisaca" Width="60" Height="60" Margin="10" Visibility="Hidden">
+                                    <lvc:PieChart.Series>
+                                        <lvc:PieSeries Title="Usado" Values="175" DataLabels="True" Fill="Red" />
+                                        <lvc:PieSeries Title="Libre" Values="27" DataLabels="True" Fill="Green" />
+                                    </lvc:PieChart.Series>
+                                </lvc:PieChart>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -183,9 +236,17 @@
                             <TextBlock x:Name="txtLaPazTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtLaPazUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtLaPazLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtLaPazEstado" Text="Desconectado" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <lvc:PieChart Width="50" Height="50"/>
                                 <lvc:PieChart Width="50" Height="50"/>
+
+                                <lvc:PieChart Name="pieChartLaPaz" Width="60" Height="60" Margin="10" Visibility="Hidden">
+                                    <lvc:PieChart.Series>
+                                        <lvc:PieSeries Title="Usado" Values="175" DataLabels="True" Fill="Red" />
+                                        <lvc:PieSeries Title="Libre" Values="27" DataLabels="True" Fill="Green" />
+                                    </lvc:PieChart.Series>
+                                </lvc:PieChart>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -208,9 +269,17 @@
                             <TextBlock x:Name="txtOruroTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtOruroUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtOruroLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtOruroEstado" Text="Desconectado" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
+                                <!--<lvc:PieChart Width="50" Height="50"/>
+                                <lvc:PieChart Width="50" Height="50"/>-->
+
+                                <lvc:PieChart Name="pieChartOruro" Width="60" Height="60" Margin="10" Visibility="Hidden">
+                                    <lvc:PieChart.Series>
+                                        <lvc:PieSeries Title="Usado" Values="175" DataLabels="True" Fill="Red" />
+                                        <lvc:PieSeries Title="Libre" Values="27" DataLabels="True" Fill="Green" />
+                                    </lvc:PieChart.Series>
+                                </lvc:PieChart>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -233,9 +302,17 @@
                             <TextBlock x:Name="txtPotosiTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtPotosiUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtPotosiLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtPotosiEstado" Text="Desconectado" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
+                                <!--<lvc:PieChart Width="50" Height="50"/>
+                                <lvc:PieChart Width="50" Height="50"/>-->
+
+                                <lvc:PieChart Name="pieChartPotosi" Width="60" Height="60" Margin="10" Visibility="Hidden">
+                                    <lvc:PieChart.Series>
+                                        <lvc:PieSeries Title="Usado" Values="175" DataLabels="True" Fill="Red" />
+                                        <lvc:PieSeries Title="Libre" Values="27" DataLabels="True" Fill="Green" />
+                                    </lvc:PieChart.Series>
+                                </lvc:PieChart>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -258,9 +335,17 @@
                             <TextBlock x:Name="txtTarijaTotalGb" Text="400 GB" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtTarijaUsoGb" Text="24 GB Uso" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <TextBlock x:Name="txtTarijaLibreGb" Text="376 GB Libre" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
+                            <TextBlock x:Name="txtTarijaEstado" Text="Desconectado" FontSize="14" HorizontalAlignment="Center" Foreground="White"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <lvc:PieChart Width="50" Height="50"/>
-                                <lvc:PieChart Width="50" Height="50"/>
+                                <!--<lvc:PieChart Width="50" Height="50"/>
+                                <lvc:PieChart Width="50" Height="50"/>-->
+
+                                <lvc:PieChart Name="pieChartTarija" Width="60" Height="60" Margin="10" Visibility="Hidden">
+                                    <lvc:PieChart.Series>
+                                        <lvc:PieSeries Title="Usado" Values="175" DataLabels="True" Fill="Red" />
+                                        <lvc:PieSeries Title="Libre" Values="27" DataLabels="True" Fill="Green" />
+                                    </lvc:PieChart.Series>
+                                </lvc:PieChart>
                             </StackPanel>
                         </StackPanel>
                     </Grid>

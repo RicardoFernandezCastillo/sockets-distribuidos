@@ -14,6 +14,7 @@ using System.IO;
 using System.Net.NetworkInformation;
 using Sockets_Servidor.credenciales;
 using Newtonsoft.Json;
+using Google.Cloud.Firestore;
 
 namespace Sockets_Servidor
 {
@@ -24,6 +25,38 @@ namespace Sockets_Servidor
     {
         private TcpListener server;
         private bool serverRunning = false;
+        private const string ProjectId = "servidoresdb-683e3"; //ID de proyecto
+        private const string CredentialsPath = "../../../credenciales/credenciales.json"; // ruta a archivo JSON
+
+
+        private class Cliente
+        {
+            public string Fecha { get; set; }
+            public string Departamento { get; set; }
+            public string NombreEquipo { get; set; }
+            public string Usuario { get; set; }
+            public string IP { get; set; }
+            public string MAC { get; set; }
+            public Disc[] Discos { get; set; }
+            public RAM RAM { get; set; }
+        }
+        private class Disc
+        {
+            public string Disco { get; set; }
+            public string TipoDisco { get; set; }
+            public string SistemaArchivos { get; set; }
+            public string DiscoTotalGB { get; set; }
+            public string EspacioUsadoGB { get; set; }
+            public string EspacioLibreGB { get; set; }
+            public string PorcentajeUso { get; set; }
+        }
+        private class RAM
+        {
+            public string Total { get; set; }
+            public string Usado { get; set; }
+        }
+        // lista de clientes
+        private List<Cliente> clientesData = new List<Cliente>();
 
         // Diccionario para almacenar clientes activos (IP -> {Departamento, MAC})
         private Dictionary<string, (string Departamento, string MAC)> clientesActivos = new Dictionary<string, (string, string)>();
@@ -34,8 +67,10 @@ namespace Sockets_Servidor
             public TextBlock? TotalGb { get; set; }
             public TextBlock? UsoGb { get; set; }
             public TextBlock? LibreGb { get; set; }
+            public TextBlock? EstadoDepa { get; set; }
             public UIElement? PieChart1 { get; set; }
             public UIElement? PieChart2 { get; set; }
+            public UIElement? PieChartMain { get; set; }
         }
 
         // Diccionario para relacionar nombre de departamento con sus controles
@@ -60,6 +95,7 @@ namespace Sockets_Servidor
         public MainWindow()
         {
             InitializeComponent();
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", CredentialsPath);
 
             // Estado global inicial
             ServidoresArribatxt.Text = "Reportando 0 de 9";
@@ -72,8 +108,11 @@ namespace Sockets_Servidor
                 TotalGb = txtCochaTotalGb,
                 UsoGb = txtCochaUsoGb,
                 LibreGb = txtCochaLibreGb,
-                PieChart1 = pieChart1,
-                PieChart2 = pieChart2
+                EstadoDepa = txtCochaEstado,
+                PieChart1 = pieUsadoCochabamba,
+                PieChart2 = pieDisponibleCochabamba,
+                PieChartMain = pieChartCochabamba
+
             }
         },
         { "Beni", new DepartmentControls {
@@ -81,6 +120,8 @@ namespace Sockets_Servidor
                 TotalGb = txtBeniTotalGb,
                 UsoGb = txtBeniUsoGb,
                 LibreGb = txtBeniLibreGb,
+                EstadoDepa = txtBeniEstado,
+                PieChartMain = pieChartBeni,
                 PieChart1 = null,  // Si no tienes referencia, puedes omitirlo
                 PieChart2 = null
             }
@@ -90,6 +131,8 @@ namespace Sockets_Servidor
                 TotalGb = txtSantaCruzTotalGb,
                 UsoGb = txtSantaCruzUsoGb,
                 LibreGb = txtSantaCruzLibreGb,
+                EstadoDepa = txtSantaCruzEstado,
+                PieChartMain = pieChartSantaCruz,
                 PieChart1 = null,
                 PieChart2 = null
             }
@@ -99,6 +142,8 @@ namespace Sockets_Servidor
                 TotalGb = txtPandoTotalGb,
                 UsoGb = txtPandoUsoGb,
                 LibreGb = txtPandoLibreGb,
+                EstadoDepa = txtPandoEstado,
+                PieChartMain = pieChartPando,
                 PieChart1 = null,
                 PieChart2 = null
             }
@@ -108,6 +153,8 @@ namespace Sockets_Servidor
                 TotalGb = txtChuquisacaTotalGb,
                 UsoGb = txtChuquisacaUsoGb,
                 LibreGb = txtChuquisacaLibreGb,
+                EstadoDepa = txtChuquisacaEstado,
+                PieChartMain = pieChartChuquisaca,
                 PieChart1 = null,
                 PieChart2 = null
             }
@@ -117,6 +164,8 @@ namespace Sockets_Servidor
                 TotalGb = txtLaPazTotalGb,
                 UsoGb = txtLaPazUsoGb,
                 LibreGb = txtLaPazLibreGb,
+                EstadoDepa = txtLaPazEstado,
+                PieChartMain = pieChartLaPaz,
                 PieChart1 = null,
                 PieChart2 = null
             }
@@ -126,6 +175,8 @@ namespace Sockets_Servidor
                 TotalGb = txtOruroTotalGb,
                 UsoGb = txtOruroUsoGb,
                 LibreGb = txtOruroLibreGb,
+                EstadoDepa = txtOruroEstado,
+                PieChartMain = pieChartOruro,
                 PieChart1 = null,
                 PieChart2 = null
             }
@@ -135,6 +186,8 @@ namespace Sockets_Servidor
                 TotalGb = txtPotosiTotalGb,
                 UsoGb = txtPotosiUsoGb,
                 LibreGb = txtPotosiLibreGb,
+                EstadoDepa = txtPotosiEstado,
+                PieChartMain = pieChartPotosi,
                 PieChart1 = null,
                 PieChart2 = null
             }
@@ -144,6 +197,8 @@ namespace Sockets_Servidor
                 TotalGb = txtTarijaTotalGb,
                 UsoGb = txtTarijaUsoGb,
                 LibreGb = txtTarijaLibreGb,
+                EstadoDepa = txtTarijaEstado,
+                PieChartMain = pieChartTarija,
                 PieChart1 = null,
                 PieChart2 = null
             }
@@ -207,8 +262,10 @@ namespace Sockets_Servidor
                 if (mensajesDepartamentos.ContainsKey(departamento))
                 {
                     // Se usa clientKey en lugar de clientIP para permitir múltiples conexiones desde la misma IP
-                    clientesActivos[clientKey] = (departamento, clientMAC);
+                    clientesActivos[clientKey] = (departamento, clientMAC); // Guardar cliente activo
+                    //MessageBox.Show("Cliente conectado: " + clientIP + " (" + departamento + ")");
                     // Puedes registrar el cliente si lo deseas
+                    await RegisterLogConection(departamento, true);
                 }
                 else
                 {
@@ -223,7 +280,7 @@ namespace Sockets_Servidor
                 {
                     bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
                     if (bytesRead == 0) {
-                        MessageBox.Show("Cliente desconectado: " + clientIP + " (" + departamento + ")");
+                        //MessageBox.Show("Cliente desconectado: " + clientIP + " (" + departamento + ")");
                         break;
                     } 
 
@@ -243,6 +300,7 @@ namespace Sockets_Servidor
             {
                 Console.WriteLine($"Error con cliente {clientIP}: {ex.Message}");
                 Dispatcher.Invoke(() => ActualizarEstadoDepartamento(departamento));
+
                 //Dispatcher.Invoke(() => lstMensajes.Items.Add($"Error con cliente {clientIP}: {ex.Message}"));
             }
             finally
@@ -257,7 +315,11 @@ namespace Sockets_Servidor
                 if (departamento != null && clientesActivos.ContainsKey(clientKey))
                 {
                     clientesActivos.Remove(clientKey);
+                    clientesData.RemoveAll(c => c.Departamento == departamento);
                     Dispatcher.Invoke(() => ActualizarEstadoDepartamento(departamento));
+                    await RegisterLogConection(departamento, false);
+                    // quitar cliente de la lista
+
                 }
             }
         }
@@ -363,8 +425,38 @@ namespace Sockets_Servidor
 
             */
 
+
             Dispatcher.Invoke(() =>
             {
+                string dep = msg.Departamento;
+                //añadir datos a la lista de clientes si no existe
+                if (!clientesData.Any(c => c.Departamento == dep)) // podria ser mac
+                {
+                    clientesData.Add(new Cliente
+                    {
+                        Fecha = msg.Fecha,
+                        Departamento = msg.Departamento,
+                        NombreEquipo = msg.NombreEquipo,
+                        Usuario = msg.Usuario,
+                        IP = msg.IP,
+                        MAC = msg.MAC,
+                        Discos = msg.Discos.ToObject<Disc[]>(),
+                        RAM = msg.RAM.ToObject<RAM>()
+                    });
+                }
+
+
+                // obtner el total almacenamiento y el almacenamiento usado de todos los discos y servidores
+                double totalS = clientesData.Sum(c => c.Discos.Sum(d => double.Parse(d.DiscoTotalGB.Replace(".", ","))));
+                double usadoS = clientesData.Sum(c => c.Discos.Sum(d => double.Parse(d.EspacioUsadoGB.Replace(".", ","))));
+                double libreS = totalS - usadoS;
+
+                //usar solo 2 decimales
+                totalS = Math.Round(totalS, 2);
+                usadoS = Math.Round(usadoS, 2);
+                libreS = Math.Round(libreS, 2);
+                txtAlmacenamientoServer.Text = $"{totalS} GB Total - {usadoS} GB Usado - {libreS} GB Libre";
+
                 if (departmentControls.TryGetValue(departamento, out DepartmentControls controls))
                 {
                     // Aquí se muestra la suma de MB, ajusta la unidad si es necesario.
@@ -374,6 +466,20 @@ namespace Sockets_Servidor
                     controls.TotalGb.Text = msg.Discos[0].DiscoTotalGB + " GB Total";
                     controls.UsoGb.Text = msg.Discos[0].EspacioUsadoGB + " GB Uso";
                     controls.LibreGb.Text = msg.Discos[0].EspacioLibreGB + " GB Libre";
+
+                    //Microsoft.CSharp.RuntimeBinder.RuntimeBinderException: 'No overload for method 'Replace' takes 2 arguments'
+                    //double usado = double.Parse(msg.Discos[0].EspacioUsadoGB.Replace(".", ","));
+                    //double libre = double.Parse(msg.Discos[0].EspacioLibreGB.Replace(".", ","));
+
+                    
+                    string usadoStr = msg.Discos[0].EspacioUsadoGB;
+                    usadoStr = usadoStr.Replace(".", ",");
+                    string libreStr = msg.Discos[0].EspacioLibreGB;
+                    libreStr = libreStr.Replace(".", ",");
+                    double usado = double.Parse(usadoStr);
+                    double libre = double.Parse(libreStr);
+
+                    ActualizarGrafico(departamento, usado, libre);
                 }
                 ActualizarEstadoDepartamento(departamento);
             });
@@ -382,7 +488,7 @@ namespace Sockets_Servidor
         private void ActualizarEstadoDepartamento(string departamento)
         {
             bool activo = clientesActivos.Values.Any(c => c.Departamento == departamento);
-            Console.WriteLine($"Clientes activos en {departamento}: {clientesActivos.Values.Count(c => c.Departamento == departamento)}");
+            //Console.WriteLine($"Clientes activos en {departamento}: {clientesActivos.Values.Count(c => c.Departamento == departamento)}");
             Dispatcher.Invoke(() =>
             {
                 if (departmentControls.TryGetValue(departamento, out DepartmentControls controls))
@@ -393,6 +499,10 @@ namespace Sockets_Servidor
                         controls.TotalGb.Visibility = Visibility.Visible;
                         controls.UsoGb.Visibility = Visibility.Visible;
                         controls.LibreGb.Visibility = Visibility.Visible;
+
+                        //ocultar el estado del departamento
+                        controls.EstadoDepa.Visibility = Visibility.Collapsed;
+
                         if (controls.PieChart1 != null)
                             controls.PieChart1.Visibility = Visibility.Visible;
                         if (controls.PieChart2 != null)
@@ -401,6 +511,8 @@ namespace Sockets_Servidor
                     else
                     {
                         controls.Nombre.Foreground = new SolidColorBrush(Colors.Red);
+
+                        controls.EstadoDepa.Visibility = Visibility.Visible;
                         controls.TotalGb.Visibility = Visibility.Collapsed;
                         controls.UsoGb.Visibility = Visibility.Collapsed;
                         controls.LibreGb.Visibility = Visibility.Collapsed;
@@ -412,10 +524,23 @@ namespace Sockets_Servidor
                         controls.TotalGb.Text = "400 GB";
                         controls.UsoGb.Text = "24 GB Uso";
                         controls.LibreGb.Text = "376 GB Libre";
+
+                        controls.EstadoDepa.Text = "Desconectado";
+
                     }
                 }
                 int activeCount = clientesActivos.Values.Select(x => x.Departamento).Distinct().Count();
                 ServidoresArribatxt.Text = $"Reportando {activeCount} de 9";
+                // obtner el total almacenamiento y el almacenamiento usado de todos los discos y servidores
+                double totalS = clientesData.Sum(c => c.Discos.Sum(d => double.Parse(d.DiscoTotalGB.Replace(".", ","))));
+                double usadoS = clientesData.Sum(c => c.Discos.Sum(d => double.Parse(d.EspacioUsadoGB.Replace(".", ","))));
+                double libreS = totalS - usadoS;
+
+                //usar solo 2 decimales
+                totalS = Math.Round(totalS, 2);
+                usadoS = Math.Round(usadoS, 2);
+                libreS = Math.Round(libreS, 2);
+                txtAlmacenamientoServer.Text = $"{totalS} GB Total - {usadoS} GB Usado - {libreS} GB Libre";
             });
         }
 
@@ -445,6 +570,39 @@ namespace Sockets_Servidor
             Bdd ventana = new Bdd();
             ventana.Show();
             this.Close();
+        }
+
+        private void ActualizarGrafico(string departamento, double usado, double libre)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                var pieChart = FindName($"pieChart{departamento}") as LiveCharts.Wpf.PieChart;
+                if (pieChart != null)
+                {
+                    pieChart.Series.Clear();
+                    pieChart.Series.Add(new LiveCharts.Wpf.PieSeries
+                    {
+                        Title = "Usado",
+                        Values = new LiveCharts.ChartValues<double> { usado },
+                        DataLabels = true,
+                        Fill = Brushes.Red
+                    });
+                    pieChart.Series.Add(new LiveCharts.Wpf.PieSeries
+                    {
+                        Title = "Libre",
+                        Values = new LiveCharts.ChartValues<double> { libre },
+                        DataLabels = true,
+                        Fill = Brushes.Green
+                    });
+                }
+            });
+        }
+        private async Task RegisterLogConection(string name, bool status)
+        {
+            string estado = status ? "Conectado" : "Desconectado";
+            FirestoreDb db = FirestoreDb.Create(ProjectId);
+            var docRef = db.Collection("log").Document();
+            await docRef.SetAsync(new { Nombre = name, Fecha = Timestamp.GetCurrentTimestamp(), Estado = estado});
         }
     }
 }

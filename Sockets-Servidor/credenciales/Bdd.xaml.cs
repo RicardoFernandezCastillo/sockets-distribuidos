@@ -25,8 +25,6 @@ namespace Sockets_Servidor.credenciales
     {
 
         private const string ProjectId = "servidoresdb-683e3"; //ID de proyecto
-        //private const string CredentialsPath = "credenciales/credenciales.json"; // ruta a archivo JSON
-        //volver 3 directorios y buscar la carpeta credenciales
         private const string CredentialsPath = "../../../credenciales/credenciales.json"; // ruta a archivo JSON
         public Bdd()
         {
@@ -38,7 +36,7 @@ namespace Sockets_Servidor.credenciales
             string name = NameTextBox.Text;
             if (int.TryParse(AgeTextBox.Text, out int age))
             {
-                await AddUserToFirestore(name, age);
+                await RegisterLogConection(name, age);
                 ResultTextBlock.Text = "Usuario agregado con éxito.";
             }
             else
@@ -47,7 +45,7 @@ namespace Sockets_Servidor.credenciales
             }
         }
 
-        private async Task AddUserToFirestore(string name, int age)
+        private async Task RegisterLogConection(string name, int age)
         {
             FirestoreDb db = FirestoreDb.Create(ProjectId);
             var docRef = db.Collection("usuarios").Document(name);
