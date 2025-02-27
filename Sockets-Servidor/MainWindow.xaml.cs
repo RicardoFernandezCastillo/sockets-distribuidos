@@ -188,6 +188,8 @@ namespace Sockets_Servidor
 
         private async Task HandleClient(TcpClient client)
         {
+            // Usamos RemoteEndPoint.ToString() para tener una clave única
+            string clientKey = client.Client.RemoteEndPoint.ToString();
             string clientIP = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
             string clientMAC = ObtenerMacAddress(clientIP);
             string departamento = null;
@@ -199,12 +201,14 @@ namespace Sockets_Servidor
             {
                 // Leer el primer mensaje (Departamento)
                 int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                departamento = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim().Replace("Departamento: ", "");
+                departamento = Encoding.UTF8.GetString(buffer, 0, bytesRead)
+                                .Trim().Replace("Departamento: ", "");
 
                 if (mensajesDepartamentos.ContainsKey(departamento))
                 {
-                    clientesActivos[clientIP] = (departamento, clientMAC);
-                    // Se puede registrar el cliente en algún log si se desea.
+                    // Se usa clientKey en lugar de clientIP para permitir múltiples conexiones desde la misma IP
+                    clientesActivos[clientKey] = (departamento, clientMAC);
+                    // Puedes registrar el cliente si lo deseas
                 }
                 else
                 {
@@ -221,7 +225,6 @@ namespace Sockets_Servidor
                     if (bytesRead == 0) break;
 
                     string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
-                    // Guardar mensaje en la lista del departamento correspondiente
                     if (mensajesDepartamentos.ContainsKey(departamento))
                     {
                         mensajesDepartamentos[departamento].Add(receivedData);
@@ -344,6 +347,7 @@ namespace Sockets_Servidor
                     }
                     else
                     {
+                        // Al no haber clientes activos, se restaura el estado por defecto:
                         controls.Nombre.Foreground = new SolidColorBrush(Colors.Red);
                         controls.TotalGb.Visibility = Visibility.Collapsed;
                         controls.UsoGb.Visibility = Visibility.Collapsed;
@@ -352,6 +356,11 @@ namespace Sockets_Servidor
                             controls.PieChart1.Visibility = Visibility.Collapsed;
                         if (controls.PieChart2 != null)
                             controls.PieChart2.Visibility = Visibility.Collapsed;
+
+                        // Restauramos los textos por defecto (según lo definido en el XAML)
+                        controls.TotalGb.Text = "400 GB";
+                        controls.UsoGb.Text = "24 GB Uso";
+                        controls.LibreGb.Text = "376 GB Libre";
                     }
                 }
                 // Actualiza el contador global de departamentos con clientes activos
@@ -359,6 +368,7 @@ namespace Sockets_Servidor
                 ServidoresArribatxt.Text = $"Reportando {activeCount} de 9";
             });
         }
+
 
 
         private void CerrarApp_Click(object sender, RoutedEventArgs e)
