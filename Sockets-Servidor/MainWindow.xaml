@@ -73,7 +73,14 @@
                                 
 
                             </StackPanel>
-
+                            <ProgressBar x:Name="pgbCocha" Width="134" 
+                                 Height="20" 
+                                 Value="15" 
+                                 Maximum="100"
+                                 Foreground="#4CAF50"
+                                 Background="#E0E0E0"
+                                 BorderBrush="Transparent"
+                                 BorderThickness="0" Visibility="Hidden"/>
                         </StackPanel>
 
                     </Grid>
@@ -112,7 +119,16 @@
                                     </lvc:PieChart.Series>
                                 </lvc:PieChart>
                             </StackPanel>
-                            
+
+                            <ProgressBar x:Name="pgbBeni" Width="134" 
+                             Height="20" 
+                             Value="15" 
+                             Maximum="100"
+                             Foreground="#4CAF50"
+                             Background="#E0E0E0"
+                             BorderBrush="Transparent"
+                             BorderThickness="0" Visibility="Hidden"/>
+
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -148,6 +164,16 @@
                                 </lvc:PieChart>
 
                             </StackPanel>
+
+                            <ProgressBar x:Name="pgbSantaCruz" Width="134" 
+                             Height="20" 
+                             Value="15" 
+                             Maximum="100"
+                             Foreground="#4CAF50"
+                             Background="#E0E0E0"
+                             BorderBrush="Transparent"
+                             BorderThickness="0" Visibility="Hidden"/>
+
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -182,6 +208,15 @@
                                     </lvc:PieChart.Series>
                                 </lvc:PieChart>
                             </StackPanel>
+
+                            <ProgressBar x:Name="pgbPando" Width="134" 
+                             Height="20" 
+                             Value="15" 
+                             Maximum="100"
+                             Foreground="#4CAF50"
+                             Background="#E0E0E0"
+                             BorderBrush="Transparent"
+                             BorderThickness="0" Visibility="Hidden"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -216,6 +251,15 @@
                                     </lvc:PieChart.Series>
                                 </lvc:PieChart>
                             </StackPanel>
+
+                            <ProgressBar x:Name="pgbChuquisaca" Width="134" 
+                             Height="20" 
+                             Value="15" 
+                             Maximum="100"
+                             Foreground="#4CAF50"
+                             Background="#E0E0E0"
+                             BorderBrush="Transparent"
+                             BorderThickness="0" Visibility="Hidden"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -249,6 +293,15 @@
                                     </lvc:PieChart.Series>
                                 </lvc:PieChart>
                             </StackPanel>
+
+                            <ProgressBar x:Name="pgbLaPaz" Width="134" 
+                             Height="20" 
+                             Value="15" 
+                             Maximum="100"
+                             Foreground="#4CAF50"
+                             Background="#E0E0E0"
+                             BorderBrush="Transparent"
+                             BorderThickness="0" Visibility="Hidden"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -282,6 +335,15 @@
                                     </lvc:PieChart.Series>
                                 </lvc:PieChart>
                             </StackPanel>
+
+                            <ProgressBar x:Name="pgbOruro" Width="134" 
+                             Height="20" 
+                             Value="15" 
+                             Maximum="100"
+                             Foreground="#4CAF50"
+                             Background="#E0E0E0"
+                             BorderBrush="Transparent"
+                             BorderThickness="0" Visibility="Hidden"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -315,6 +377,15 @@
                                     </lvc:PieChart.Series>
                                 </lvc:PieChart>
                             </StackPanel>
+
+                            <ProgressBar x:Name="pgbPotosi" Width="134" 
+                             Height="20" 
+                             Value="15" 
+                             Maximum="100"
+                             Foreground="#4CAF50"
+                             Background="#E0E0E0"
+                             BorderBrush="Transparent"
+                             BorderThickness="0" Visibility="Hidden"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -348,6 +419,15 @@
                                     </lvc:PieChart.Series>
                                 </lvc:PieChart>
                             </StackPanel>
+
+                            <ProgressBar x:Name="pgbTarija" Width="134" 
+                             Height="20" 
+                             Value="15" 
+                             Maximum="100"
+                             Foreground="#4CAF50"
+                             Background="#E0E0E0"
+                             BorderBrush="Transparent"
+                             BorderThickness="0" Visibility="Hidden"/>
                         </StackPanel>
                     </Grid>
                 </Border>

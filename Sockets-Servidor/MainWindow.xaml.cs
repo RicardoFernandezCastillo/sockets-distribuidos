@@ -74,6 +74,8 @@ namespace Sockets_Servidor
             public UIElement? PieChart1 { get; set; }
             public UIElement? PieChart2 { get; set; }
             public UIElement? PieChartMain { get; set; }
+            //progressbar
+            public ProgressBar? ProgressBar { get; set; }
         }
 
         // Diccionario para relacionar nombre de departamento con sus controles
@@ -114,7 +116,8 @@ namespace Sockets_Servidor
                 EstadoDepa = txtCochaEstado,
                 PieChart1 = pieUsadoCochabamba,
                 PieChart2 = pieDisponibleCochabamba,
-                PieChartMain = pieChartCochabamba
+                PieChartMain = pieChartCochabamba,
+                ProgressBar = pgbCocha
 
             }
         },
@@ -126,7 +129,8 @@ namespace Sockets_Servidor
                 EstadoDepa = txtBeniEstado,
                 PieChartMain = pieChartBeni,
                 PieChart1 = null,  // Si no tienes referencia, puedes omitirlo
-                PieChart2 = null
+                PieChart2 = null,
+                ProgressBar = pgbBeni
             }
         },
         { "SantaCruz", new DepartmentControls {
@@ -137,7 +141,8 @@ namespace Sockets_Servidor
                 EstadoDepa = txtSantaCruzEstado,
                 PieChartMain = pieChartSantaCruz,
                 PieChart1 = null,
-                PieChart2 = null
+                PieChart2 = null,
+                ProgressBar = pgbSantaCruz
             }
         },
         { "Pando", new DepartmentControls {
@@ -148,7 +153,8 @@ namespace Sockets_Servidor
                 EstadoDepa = txtPandoEstado,
                 PieChartMain = pieChartPando,
                 PieChart1 = null,
-                PieChart2 = null
+                PieChart2 = null,
+                ProgressBar = pgbPando
             }
         },
         { "Chuquisaca", new DepartmentControls {
@@ -159,7 +165,8 @@ namespace Sockets_Servidor
                 EstadoDepa = txtChuquisacaEstado,
                 PieChartMain = pieChartChuquisaca,
                 PieChart1 = null,
-                PieChart2 = null
+                PieChart2 = null,
+                ProgressBar = pgbChuquisaca
             }
         },
         { "LaPaz", new DepartmentControls {
@@ -170,7 +177,9 @@ namespace Sockets_Servidor
                 EstadoDepa = txtLaPazEstado,
                 PieChartMain = pieChartLaPaz,
                 PieChart1 = null,
-                PieChart2 = null
+                PieChart2 = null,
+                ProgressBar = pgbLaPaz
+
             }
         },
         { "Oruro", new DepartmentControls {
@@ -181,7 +190,8 @@ namespace Sockets_Servidor
                 EstadoDepa = txtOruroEstado,
                 PieChartMain = pieChartOruro,
                 PieChart1 = null,
-                PieChart2 = null
+                PieChart2 = null,
+                ProgressBar = pgbOruro
             }
         },
         { "Potosi", new DepartmentControls {
@@ -192,7 +202,8 @@ namespace Sockets_Servidor
                 EstadoDepa = txtPotosiEstado,
                 PieChartMain = pieChartPotosi,
                 PieChart1 = null,
-                PieChart2 = null
+                PieChart2 = null,
+                ProgressBar = pgbPotosi
             }
         },
         { "Tarija", new DepartmentControls {
@@ -203,7 +214,8 @@ namespace Sockets_Servidor
                 EstadoDepa = txtTarijaEstado,
                 PieChartMain = pieChartTarija,
                 PieChart1 = null,
-                PieChart2 = null
+                PieChart2 = null,
+                ProgressBar = pgbTarija
             }
         }
     };
@@ -533,6 +545,11 @@ namespace Sockets_Servidor
                     double usado = double.Parse(usadoStr);
                     double libre = double.Parse(libreStr);
 
+                    controls.ProgressBar.Value = usado;
+                    controls.ProgressBar.Maximum = usado + libre;
+                    controls.ProgressBar.Minimum = 0;
+
+
                     ActualizarGrafico(departamento, usado, libre);
                 }
                 ActualizarEstadoDepartamento(departamento);
@@ -557,6 +574,9 @@ namespace Sockets_Servidor
                         //ocultar el estado del departamento
                         controls.EstadoDepa.Visibility = Visibility.Collapsed;
 
+                        // mostrar progressbar
+                        controls.ProgressBar.Visibility = Visibility.Visible;
+
                         if (controls.PieChart1 != null)
                             controls.PieChart1.Visibility = Visibility.Visible;
                         if (controls.PieChart2 != null)
@@ -565,6 +585,9 @@ namespace Sockets_Servidor
                     else
                     {
                         controls.Nombre.Foreground = new SolidColorBrush(Colors.Red);
+
+                        //ocultar el progressbar
+                        controls.ProgressBar.Visibility = Visibility.Collapsed;
 
                         controls.EstadoDepa.Visibility = Visibility.Visible;
                         controls.TotalGb.Visibility = Visibility.Collapsed;
