@@ -240,7 +240,7 @@ namespace Sockets_Servidor
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => txtPuerto.Text=($"Error: {ex.Message}"));
+                Dispatcher.Invoke(() => txtPuerto.Text = ($"Error: {ex.Message}"));
             }
         }
 
@@ -258,17 +258,55 @@ namespace Sockets_Servidor
             try
             {
                 // Leer el primer mensaje (Departamento)
+                //int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                //departamento = Encoding.UTF8.GetString(buffer, 0, bytesRead)
+                //                .Trim().Replace("Departamento: ", "");
+
+                // descerializar mensaje Json y leer el departamento
                 int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                departamento = Encoding.UTF8.GetString(buffer, 0, bytesRead)
-                                .Trim().Replace("Departamento: ", "");
+                string receivedDataaa = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
+                dynamic msg = JsonConvert.DeserializeObject(receivedDataaa);
+                departamento = msg.Departamento;
+
 
                 if (mensajesDepartamentos.ContainsKey(departamento))
                 {
+                    // si ya hay un cliente con ese departamento, desconectarlo
+                    //if (clientesActivos.Values.Any(c => c.Departamento == departamento))
+                    //{
+                    //    //string clientIP = clientesActivos.First(c => c.Value.Departamento == departamento).Key;
+                    //    string clientIPO = clientesActivos.First(c => c.Value.Departamento == departamento).Key;
+                    //    if (clientIPO != null)
+                    //    {
+                    //        //clientesActivos.Remove(clientIP);
+                    //        clientesActivos.Remove(clientKey);
+                    //        Dispatcher.Invoke(() => ActualizarEstadoDepartamento(departamento));
+                    //        //MessageBox.Show("Cliente desconectado: " + clientIP + " (" + departamento + ")");
+                    //    }
+                    //}
+
                     // Se usa clientKey en lugar de clientIP para permitir múltiples conexiones desde la misma IP
                     clientesActivos[clientKey] = (departamento, clientMAC); // Guardar cliente activo
-                    //MessageBox.Show("Cliente conectado: " + clientIP + " (" + departamento + ")");
-                    // Puedes registrar el cliente si lo deseas
-                    await RegisterLogConection(departamento, true);
+                                                                            //MessageBox.Show("Cliente conectado: " + clientIP + " (" + departamento + ")");
+                                                                            // Puedes registrar el cliente si lo deseas
+
+                    //registrar el cliente
+                    Cliente cliente = new Cliente
+                    {
+                        Fecha = msg.Fecha,
+                        Departamento = msg.Departamento,
+                        NombreEquipo = msg.NombreEquipo,
+                        Usuario = msg.Usuario,
+                        IP = msg.IP,
+                        MAC = msg.MAC,
+                        Discos = msg.Discos.ToObject<Disc[]>(),
+                        RAM = msg.RAM.ToObject<RAM>()
+                    };
+
+                    await RegisterLogConection(departamento, true, cliente);
+                    await RegisterDevice(cliente);
+
+
                 }
                 else
                 {
@@ -282,10 +320,11 @@ namespace Sockets_Servidor
                 while (client.Connected)
                 {
                     bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                    if (bytesRead == 0) {
+                    if (bytesRead == 0)
+                    {
                         //MessageBox.Show("Cliente desconectado: " + clientIP + " (" + departamento + ")");
                         break;
-                    } 
+                    }
 
                     string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
                     if (mensajesDepartamentos.ContainsKey(departamento))
@@ -323,10 +362,16 @@ namespace Sockets_Servidor
                 client.Close();
                 if (departamento != null && clientesActivos.ContainsKey(clientKey))
                 {
+                    //recuperar los datos del cliente dado el departamento
+                    Cliente cliente = clientesData.Find(c => c.Departamento == departamento);
+
+
+                    await RegisterLogConection(departamento, false, cliente);
+
                     clientesActivos.Remove(clientKey);
                     clientesData.RemoveAll(c => c.Departamento == departamento);
                     Dispatcher.Invoke(() => ActualizarEstadoDepartamento(departamento));
-                    await RegisterLogConection(departamento, false);
+
                     // quitar cliente de la lista
 
                 }
@@ -480,7 +525,7 @@ namespace Sockets_Servidor
                     //double usado = double.Parse(msg.Discos[0].EspacioUsadoGB.Replace(".", ","));
                     //double libre = double.Parse(msg.Discos[0].EspacioLibreGB.Replace(".", ","));
 
-                    
+
                     string usadoStr = msg.Discos[0].EspacioUsadoGB;
                     usadoStr = usadoStr.Replace(".", ",");
                     string libreStr = msg.Discos[0].EspacioLibreGB;
@@ -541,8 +586,13 @@ namespace Sockets_Servidor
                 int activeCount = clientesActivos.Values.Select(x => x.Departamento).Distinct().Count();
                 ServidoresArribatxt.Text = $"Reportando {activeCount} de 9";
                 // obtner el total almacenamiento y el almacenamiento usado de todos los discos y servidores
-                double totalS = clientesData.Sum(c => c.Discos.Sum(d => double.Parse(d.DiscoTotalGB.Replace(".", ","))));
-                double usadoS = clientesData.Sum(c => c.Discos.Sum(d => double.Parse(d.EspacioUsadoGB.Replace(".", ","))));
+                //double totalS = clientesData.Sum(c => c.Discos.Sum(d => double.Parse(d.DiscoTotalGB.Replace(".", ","))));
+                //double usadoS = clientesData.Sum(c => c.Discos.Sum(d => double.Parse(d.EspacioUsadoGB.Replace(".", ","))));
+                //double libreS = totalS - usadoS;
+
+                // obtner el total almacenamiento y el almacenamiento usado de solo el primer disco de cada servidor
+                double totalS = clientesData.Sum(c => double.Parse(c.Discos[0].DiscoTotalGB.Replace(".", ",")));
+                double usadoS = clientesData.Sum(c => double.Parse(c.Discos[0].EspacioUsadoGB.Replace(".", ",")));
                 double libreS = totalS - usadoS;
 
                 //usar solo 2 decimales
@@ -575,7 +625,7 @@ namespace Sockets_Servidor
 
         private void btn_tempo_Click(object sender, RoutedEventArgs e)
         {
-            
+
             Bdd ventana = new Bdd();
             ventana.Show();
             this.Close();
@@ -597,26 +647,26 @@ namespace Sockets_Servidor
 
             if (result == MessageBoxResult.Yes)
             {
-                
+
                 var grid = sender as Grid;
-                var departamento = grid?.Tag as string; 
+                var departamento = grid?.Tag as string;
 
                 if (departamento != null && mensajesDepartamentos.ContainsKey(departamento))
                 {
-                    
+
                     int activeCount = clientesActivos.Values.Select(x => x.Departamento).Distinct().Count();
 
-                    
+
                     if (ventanaGrafico == null || !ventanaGrafico.IsVisible)
                     {
                         ventanaGrafico = new W_Grafico();
                         ventanaGrafico.Show();
                     }
 
-                    
+
                     ventanaGrafico.ActualizarServidoresReportando(activeCount);
 
-                
+
                     ActualizarGrafico(departamento);
                 }
             }
@@ -674,7 +724,7 @@ namespace Sockets_Servidor
 
                     var datos = historialGraficos[departamento];
 
-                   
+
                     DateTime fechaHora = DateTime.TryParse(msg.Fecha.ToString(), out DateTime fechaMsg) ? fechaMsg : DateTime.Now;
                     string fechaFormateada = fechaHora.ToString("yyyy-MM-dd");
                     string horaFormateada = fechaHora.ToString("HH:mm:ss");
@@ -688,18 +738,18 @@ namespace Sockets_Servidor
 
                     datos.HistogramaValores.Add(Math.Round(porcentajeUsoRAM, 1));
 
-                 
+
                     string etiquetaHistograma = horaFormateada;
                     datos.HistogramaLabels.Add(etiquetaHistograma);
 
-                  
+
                     if (datos.HistogramaLabels.Count > 10)
                     {
                         datos.HistogramaLabels.RemoveAt(0);
                         datos.HistogramaValores.RemoveAt(0);
                     }
 
-                  
+
                     ventanaGrafico.ActualizarDatos(datos);
                 }
             }
@@ -730,12 +780,66 @@ namespace Sockets_Servidor
                 }
             });
         }
-        private async Task RegisterLogConection(string name, bool status)
+        private async Task RegisterLogConection(string name, bool status, Cliente cliente)
         {
             string estado = status ? "Conectado" : "Desconectado";
             FirestoreDb db = FirestoreDb.Create(ProjectId);
             var docRef = db.Collection("log").Document();
-            await docRef.SetAsync(new { Nombre = name, Fecha = Timestamp.GetCurrentTimestamp(), Estado = estado});
+            await docRef.SetAsync(new
+            {
+                Nombre = name,
+                Fecha = Timestamp.GetCurrentTimestamp(),
+                Estado = estado,
+                Mac = cliente.MAC,
+                NombreEquipo = cliente.NombreEquipo,
+                Usuario = cliente.Usuario,
+                IP = cliente.IP,
+                Disco1 = cliente.Discos[0].Disco,
+                Disco1Tipo = cliente.Discos[0].TipoDisco,
+                Disco1SistemaArchivos = cliente.Discos[0].SistemaArchivos,
+                Disco1TotalGB = cliente.Discos[0].DiscoTotalGB,
+                Disco1EspacioUsadoGB = cliente.Discos[0].EspacioUsadoGB,
+                Disco1EspacioLibreGB = cliente.Discos[0].EspacioLibreGB,
+                Disco1PorcentajeUso = cliente.Discos[0].PorcentajeUso,
+
+
+            });
+        }
+
+        private async Task RegisterDevice(Cliente cliente)
+        {
+            // chequear si hay un documento con la mac del cliente
+            FirestoreDb db = FirestoreDb.Create(ProjectId);
+            var docRef = db.Collection("cliente").Document(cliente.MAC);
+            var snapshot = await docRef.GetSnapshotAsync();
+
+            // si no existe, crear un nuevo documento
+            if (!snapshot.Exists)
+            {
+                await docRef.SetAsync(new
+                {
+                    NombreEquipo = cliente.NombreEquipo,
+                    Usuario = cliente.Usuario,
+                    IP = cliente.IP,
+                    MAC = cliente.MAC,
+                    Disco1 = cliente.Discos[0].Disco,
+                    Disco1Tipo = cliente.Discos[0].TipoDisco,
+                    Disco1SistemaArchivos = cliente.Discos[0].SistemaArchivos,
+                    Disco1TotalGB = cliente.Discos[0].DiscoTotalGB,
+                    Disco1EspacioUsadoGB = cliente.Discos[0].EspacioUsadoGB,
+                    Disco1EspacioLibreGB = cliente.Discos[0].EspacioLibreGB,
+                    Disco1PorcentajeUso = cliente.Discos[0].PorcentajeUso,
+                    Disco2 = cliente.Discos[1].Disco,
+                    Disco2Tipo = cliente.Discos[1].TipoDisco,
+                    Disco2SistemaArchivos = cliente.Discos[1].SistemaArchivos,
+                    Disco2TotalGB = cliente.Discos[1].DiscoTotalGB,
+                    Disco2EspacioUsadoGB = cliente.Discos[1].EspacioUsadoGB,
+                    Disco2EspacioLibreGB = cliente.Discos[1].EspacioLibreGB,
+                    Disco2PorcentajeUso = cliente.Discos[1].PorcentajeUso,
+                    RAMTotal = cliente.RAM.Total,
+                    RAMUsado = cliente.RAM.Usado
+                });
+            }
         }
     }
 
